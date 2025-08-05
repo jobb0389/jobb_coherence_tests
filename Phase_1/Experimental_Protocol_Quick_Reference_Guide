@@ -1,0 +1,255 @@
+# Phase 1 Protocol: Quick Reference Guide
+## JOBB Information Decay & MCC Testing Framework
+
+---
+
+## 🎯 Protocol Overview
+
+**What This Is**: A 5-7 day experimental protocol to measure how information degrades when AI systems use retrieval (RAG/Project mode) versus direct document access (Session mode).
+
+**Core Discovery You're Testing**: The hypothesis that RAG causes ~13-15% quality degradation, ~11% variance, and triggers "Maladaptive Confidence Cascades" where AI becomes more confident while becoming less accurate.
+
+**End Goal**: Establish baseline metrics proving information decay is architectural, not behavioral.
+
+---
+
+## 📋 Test Sequence Map
+
+### **Days 1-2: Setup & Preparation**
+→ [Section 1.1-1.3: Document Preparation & Infrastructure]
+- Collect 3 RFC documents + 6 supporting docs
+- Extract 8 tracer elements per document
+- Configure test environment
+
+**Quick Start**: Jump to Section 1.1.A for document requirements
+
+### **Day 3: Baseline Testing**
+→ [Section 3: Test 0 - Implicit Bias Baseline]
+- Run WITHOUT telling AI what to preserve/modernize
+- Measure default behavior (Purpose Bias Vector)
+- Track confidence patterns
+
+**Quick Start**: Jump to Section 3.1 for test prompt
+
+### **Days 4-5: Core Comparison**
+→ [Section 4: Session vs Project Comparison]
+- Run 3 guardrail levels (none/basic/strict)
+- Execute 5+ runs per condition
+- Measure quality delta and variance
+
+**Quick Start**: Jump to Section 4.1 for test scenarios
+
+### **Days 6-7: Analysis**
+→ [Section 6: Analysis and Documentation]
+- Calculate metrics
+- Generate visualizations
+- Document findings
+
+**Quick Start**: Jump to Section 6.3 for report template
+
+---
+
+## 🧪 Test Types Reference
+
+### **Test 0: Implicit Bias Baseline**
+**Purpose**: What does AI do without guidance?  
+**Protocol**: Section 3.1  
+**Key Metric**: Purpose Bias Vector (-1 to +1)  
+**Time**: 2-3 hours
+
+### **Basic Comparison Test**
+**Purpose**: Measure Session vs Project quality gap  
+**Protocol**: Section 4.1  
+**Key Metric**: Quality delta (expect 13-15%)  
+**Time**: 4-6 hours
+
+### **Tracer Survival Test**
+**Purpose**: Track specific requirements through transformation  
+**Protocol**: Section 4.2  
+**Key Metric**: Preservation rates by type  
+**Time**: 3-4 hours
+
+### **Variance Test**
+**Purpose**: Measure consistency/reliability  
+**Protocol**: Section 4.3  
+**Key Metric**: Coefficient of variation (expect ~11%)  
+**Time**: 4-5 hours (5 runs)
+
+### **Special Tests (Optional)**
+- **Tracer Shuffling**: Section 3.2 - Tests confusion with decoys
+- **Bias Crossover**: Section 4.1.A - Forces conflicting requirements
+- **Confidence Tracking**: Section 3.1.A - Explicit confidence measurement
+
+---
+
+## 📊 Key Metrics Cheat Sheet
+
+| Metric | What It Measures | Target Value | Where to Find |
+|--------|-----------------|--------------|---------------|
+| **Quality Delta** | Session vs Project gap | 13-15% | Section 6.1 |
+| **Purpose Bias Vector** | Preservation vs modernization | -1 to +1 | Section 3.1 |
+| **Coefficient of Variation** | Output consistency | ~11% for Project | Section 4.3 |
+| **Tracer Survival Rate** | Requirement preservation | >90% Session, <70% Project | Section 4.2 |
+| **MCC Risk Score** | Confidence cascade risk | 0-100% | Section 6.1 |
+| **Hallucination Count** | Invented elements | <3 Session, >10 Project | Section 4.2 |
+
+---
+
+## 🔄 Daily Workflow
+
+### **Starting a Test Session**
+
+1. **Pick Your Test Type** (see Test Types Reference above)
+2. **Prepare Documents**
+   - Session: Copy all docs to clipboard
+   - Project: Upload to project/workspace
+3. **Run Test**
+   - Use exact prompt from protocol
+   - Save all outputs with timestamp
+   - Note any anomalies
+4. **Code Results**
+   - Apply tracer coding (Section 4.2)
+   - Calculate metrics (Section 6.1)
+   - Update tracking spreadsheet
+
+### **Quick Test Checklist**
+```
+□ Fresh browser/API session
+□ Documents prepared
+□ Prompt copied exactly
+□ Timer started
+□ Output saved
+□ Metrics recorded
+□ Anomalies noted
+```
+
+---
+
+## 📁 File Organization
+
+```
+experiments/
+├── phase_1/
+│   ├── documents/           # Source docs
+│   │   ├── rfcs/
+│   │   └── supporting/
+│   ├── test_0_baseline/     # Day 3 results
+│   │   ├── session/
+│   │   └── project/
+│   ├── comparison_tests/    # Days 4-5 results
+│   │   ├── no_guardrails/
+│   │   ├── basic_guardrails/
+│   │   └── strict_guardrails/
+│   ├── analysis/           # Day 6-7 outputs
+│   │   ├── metrics/
+│   │   └── visualizations/
+│   └── trackers/
+│       ├── tracer_survival.xlsx
+│       └── variance_tracking.xlsx
+```
+
+---
+
+## 🚨 Common Scenarios & Solutions
+
+### "Which test should I run next?"
+1. Haven't done Test 0? → Start there (Section 3)
+2. Done Test 0? → Basic Comparison (Section 4.1)
+3. Need variance data? → Run 5x repetitions (Section 4.3)
+4. Want deeper insights? → Try special tests
+
+### "How many runs do I need?"
+- **Minimum**: 3 runs per condition
+- **Recommended**: 5 runs (statistical power)
+- **If high variance**: Add 2 more runs
+
+### "Session or Project first?"
+Always alternate: Session → Project → Session → Project  
+(Avoids time-of-day effects)
+
+### "What counts as a hallucination?"
+- **Factual**: Invented documents/data
+- **Relational**: False connections
+- **Purpose**: Wrong interpretation of task
+
+---
+
+## 📈 Progress Tracker
+
+### Phase 1 Milestone Checklist
+```
+Setup & Prep
+□ Documents validated
+□ Tracers extracted
+□ Environment configured
+
+Core Testing  
+□ Test 0 complete (both modes)
+□ No guardrails test (5 runs each)
+□ Basic guardrails test (5 runs each)
+□ Strict guardrails test (5 runs each)
+
+Analysis
+□ Metrics calculated
+□ Visualizations generated
+□ Report drafted
+□ Data archived
+
+Ready for Phase 2?
+□ Quality delta confirmed (13-15%)
+□ Variance characterized (~11%)
+□ MCC indicators identified
+□ Baseline established
+```
+
+---
+
+## 🔗 Quick Links to Key Sections
+
+**Setup & Configuration**
+- Document requirements → Section 1.1.A
+- Tracer extraction → Section 1.2.A
+- Statistical config → Section 1.3.A
+
+**Test Protocols**
+- Test 0 prompt → Section 3.1
+- Comparison prompts → Section 4.1.A
+- Variance protocol → Section 4.3
+
+**Analysis Tools**
+- Metrics calculation → Section 6.1
+- Visualization suite → Section 6.2
+- Report template → Section 6.3
+
+**Troubleshooting**
+- Common issues → Appendix A (end of main protocol)
+- Statistical validation → Section 4.3
+- Vendor normalization → Section 1.3.B
+
+---
+
+## 💡 Pro Tips
+
+1. **Always save raw outputs** - You'll need them for analysis
+2. **Use exact prompts** - Even small changes affect results  
+3. **Track time-of-day** - Model performance varies
+4. **Document anomalies** - They often reveal important patterns
+5. **Run tests in batches** - More efficient than one-offs
+
+---
+
+## 🎯 Success Criteria
+
+You're done with Phase 1 when you can show:
+
+1. **Quantified quality gap** between Session and Project modes
+2. **Measured variance** proving Project mode is unstable
+3. **Identified MCC indicators** (confidence > accuracy)
+4. **Documented hallucination patterns** with examples
+5. **Statistical validation** of all findings
+
+---
+
+**Remember**: This phase establishes the foundation. Every metric here becomes the baseline for proving information decay compounds through organizational layers in Phase 2.
+
+**Next Step**: Start with Test 0 (Section 3) to establish implicit bias baseline, then proceed to comparison tests.
