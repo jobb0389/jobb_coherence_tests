@@ -1,0 +1,1423 @@
+# Phase 1: Foundation Experimental Protocol Blueprint (Enhanced v2.0)
+## JOBB Information Decay & MCC Testing Framework
+
+---
+
+## Executive Overview
+
+**Duration**: 5-7 days  
+**Objective**: Establish baseline measurements and prepare comprehensive test infrastructure for measuring information decay in RAG vs Session retrieval modes  
+**Output**: Foundational dataset, baseline metrics, and calibrated test environment for subsequent phases  
+**Enhancement Focus**: Addressing retrieval normalization, semantic matching robustness, statistical power, and confidence tracking
+
+---
+
+## Day 1-2: Document Preparation & Infrastructure
+
+### 1.1 Document Collection and Standardization
+
+#### A. Primary Test Corpus Assembly
+
+**Technical Documents** (3 documents required):
+
+```markdown
+Document Set A: RFC-Style Technical Specifications
+- RFC_1_Installer_Packaging_Deployment_Legacy.md (1,871 lines)
+- RFC_2_Authentication_Service_Specification.md (1,200-1,500 lines)
+- RFC_3_Data_Pipeline_Architecture.md (1,000-1,400 lines)
+
+Requirements per document:
+□ Contains 10+ hard constraints (MUST, SHALL, REQUIRED)
+□ Includes 15+ specific numerical values (thresholds, percentages)
+□ Has 5+ edge case specifications
+□ Contains 3+ warning/risk sections
+□ Cross-references other documents (minimum 3 references)
+```
+
+**Supporting Documents** (mandatory):
+
+```markdown
+Compliance & Governance:
+- Refactoring_Compliance_Audit_Checklist.md
+- Refactoring_Header_Footer_Template.md
+- Governance_Relationship_Matrix.md
+
+Dependency Documents:
+- RFC_Payment_Processing_Service_Legacy.md
+- RFC_Compliance_Audit_Monitor_Legacy.md
+- RFC_System_Integration_Constraints.md
+```
+
+#### B. Enhanced Document Validation with Vendor Normalization
+
+```python
+# enhanced_document_validator.py
+import re
+from typing import Dict, List, Tuple
+import numpy as np
+
+class EnhancedDocumentValidator:
+    def __init__(self, vendor='claude-3.5'):
+        self.vendor = vendor
+        self.vendor_specific_limits = {
+            'claude-3.5': {'max_chars': 200000, 'optimal_lines': 1500},
+            'gpt-4': {'max_chars': 128000, 'optimal_lines': 1200},
+            'gemini-pro': {'max_chars': 100000, 'optimal_lines': 1000}
+        }
+        
+    def validate_document(self, doc_path: str) -> Tuple[bool, Dict]:
+        """
+        Validate document with vendor-specific considerations
+        """
+        validations = {
+            'length_check': self.check_vendor_limits(doc_path),
+            'hard_constraints': self.count_constraints(doc_path) >= 10,
+            'numerical_values': self.count_numbers(doc_path) >= 15,
+            'edge_cases': self.count_conditionals(doc_path) >= 5,
+            'cross_references': self.count_references(doc_path) >= 3,
+            'structure_complete': self.verify_structure(doc_path),
+            'vendor_compatibility': self.check_vendor_compatibility(doc_path)
+        }
+        
+        return all(validations.values()), validations
+    
+    def check_vendor_limits(self, doc_path: str) -> bool:
+        """Check if document fits within vendor constraints"""
+        with open(doc_path, 'r') as f:
+            content = f.read()
+        
+        limits = self.vendor_specific_limits[self.vendor]
+        return len(content) < limits['max_chars']
+```
+
+### 1.2 Enhanced Tracer Element Definition with Semantic Robustness
+
+#### A. Advanced Tracer Extraction Protocol
+
+```python
+# enhanced_tracer_extraction.py
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+class EnhancedTracerExtractor:
+    def __init__(self):
+        # Use embedding model for semantic matching
+        self.encoder = SentenceTransformer('all-MiniLM-L6-v2')
+        self.tracers = []
+        
+    def extract_tracers(self, document_path: str) -> List[Dict]:
+        """
+        Extract tracers with semantic embeddings for robust matching
+        """
+        tracers = []
+        
+        with open(document_path, 'r') as f:
+            lines = f.readlines()
+        
+        for i, line in enumerate(lines):
+            tracer_candidates = self.identify_tracer_candidates(line, i)
+            
+            for candidate in tracer_candidates:
+                # Store both text and embedding
+                tracer = {
+                    'id': f"T{len(tracers)+1}",
+                    'type': candidate['type'],
+                    'category': candidate['category'],
+                    'original_text': candidate['text'],
+                    'location': f"line {i+1}",
+                    'criticality': candidate['criticality'],
+                    'embedding': self.encoder.encode(candidate['text']),
+                    'semantic_variants': self.generate_variants(candidate['text'])
+                }
+                tracers.append(tracer)
+        
+        return tracers[:8]  # Return top 8 tracers
+    
+    def generate_variants(self, text: str) -> List[str]:
+        """
+        Generate semantic variants for robust matching
+        """
+        variants = [text]  # Original
+        
+        # Common rephrasings
+        if "MUST" in text:
+            variants.append(text.replace("MUST", "SHALL"))
+            variants.append(text.replace("MUST", "is required to"))
+        
+        if "SHALL NOT" in text:
+            variants.append(text.replace("SHALL NOT", "MUST NOT"))
+            variants.append(text.replace("SHALL NOT", "is prohibited from"))
+        
+        # Numerical variations
+        numbers = re.findall(r'\d+\.?\d*', text)
+        for num in numbers:
+            # Add common misreadings
+            variants.append(text.replace(num, str(float(num) * 1.1)))
+            variants.append(text.replace(num, str(float(num) * 0.9)))
+        
+        return variants
+```
+
+#### B. Enhanced Tracer Tracking with Confidence Scores
+
+```yaml
+enhanced_tracer_template:
+  document_id: "RFC_1"
+  tracers:
+    - id: "T1"
+      type: "hard_constraint"
+      category: 1
+      original_text: "The system MUST maintain TLS 1.3 encryption"
+      location: "line 245"
+      criticality: "high"
+      embedding: [0.234, -0.123, ...]  # 384-dim vector
+      semantic_variants:
+        - "The system SHALL maintain TLS 1.3 encryption"
+        - "The system is required to maintain TLS 1.3 encryption"
+      expected_preservation_rate: 0.95  # Based on criticality
+      
+    - id: "T2"
+      type: "numerical_value"
+      category: 2
+      original_text: "Response time threshold: 200ms"
+      location: "line 512"
+      criticality: "medium"
+      embedding: [0.456, -0.234, ...]
+      semantic_variants:
+        - "Response time limit: 200ms"
+        - "Maximum response time: 200 milliseconds"
+      expected_preservation_rate: 0.75
+```
+
+### 1.3 Enhanced Experimental Environment with Statistical Power
+
+#### A. Statistically Justified Configuration
+
+```python
+# statistical_config.py
+import scipy.stats as stats
+import numpy as np
+
+class StatisticallyPoweredConfig:
+    def __init__(self):
+        self.calculate_required_runs()
+        
+    def calculate_required_runs(self):
+        """
+        Calculate minimum runs needed for statistical power
+        """
+        # Based on pilot data or conservative estimates
+        expected_effect_size = 0.15  # 15% quality delta
+        expected_variance = 0.11  # 11% coefficient of variation
+        alpha = 0.05  # Significance level
+        power = 0.80  # Desired power
+        
+        # Calculate sample size for paired t-test
+        from statsmodels.stats.power import ttest_power
+        
+        self.min_runs = int(np.ceil(
+            ttest_power(effect_size=expected_effect_size/expected_variance,
+                       alpha=alpha, 
+                       power=power, 
+                       alternative='two-sided')
+        ))
+        
+        # Add buffer for potential failures
+        self.recommended_runs = max(5, self.min_runs + 2)
+        
+        print(f"Minimum runs for statistical power: {self.min_runs}")
+        print(f"Recommended runs with buffer: {self.recommended_runs}")
+        
+        return {
+            'minimum_runs': self.min_runs,
+            'recommended_runs': self.recommended_runs,
+            'parameters': {
+                'effect_size': expected_effect_size,
+                'variance': expected_variance,
+                'alpha': alpha,
+                'power': power
+            }
+        }
+```
+
+#### B. Vendor-Normalized Retrieval Configuration
+
+```python
+# vendor_normalized_config.py
+class VendorNormalizedConfig:
+    """
+    Normalize retrieval behavior across vendors
+    """
+    def __init__(self):
+        self.vendor_configs = {
+            'claude-3.5': {
+                'session_mode': {
+                    'method': 'direct_context',
+                    'max_context': 200000,
+                    'format': 'full_document'
+                },
+                'project_mode': {
+                    'method': 'claude_projects',
+                    'chunk_behavior': 'dynamic',
+                    'retrieval_type': 'semantic_search',
+                    'typical_chunks_retrieved': 5-10
+                }
+            },
+            'gpt-4': {
+                'session_mode': {
+                    'method': 'direct_context',
+                    'max_context': 128000,
+                    'format': 'full_document'
+                },
+                'project_mode': {
+                    'method': 'assistant_retrieval',
+                    'chunk_size': 800,
+                    'retrieval_type': 'hybrid_search',
+                    'max_chunks': 20
+                }
+            }
+        }
+        
+        # Normalization strategy
+        self.normalization = {
+            'strategy': 'single_vendor_focus',
+            'primary_vendor': 'claude-3.5',
+            'rationale': 'Most consistent project mode implementation'
+        }
+        
+        # Standard test parameters
+        self.test_params = {
+            'temperature': 0.3,
+            'max_tokens': 8000,
+            'seed': 42,  # Where supported
+            'num_runs': self.get_statistical_runs()
+        }
+    
+    def get_statistical_runs(self):
+        """Get statistically justified number of runs"""
+        config = StatisticallyPoweredConfig()
+        return config.recommended_runs
+```
+
+---
+
+## Day 3: Test 0 - Enhanced Implicit Bias Baseline
+
+### 3.1 Advanced Implicit Bias Testing
+
+#### A. Enhanced Purpose with Confidence Tracking
+
+```python
+# enhanced_implicit_bias_test.py
+import re
+from datetime import datetime
+from typing import Dict, List, Tuple
+
+class EnhancedImplicitBiasTest:
+    def __init__(self, config, documents):
+        self.config = config
+        self.documents = documents
+        self.results = {}
+        self.confidence_patterns = {
+            'high_confidence': [
+                'clearly', 'definitely', 'certainly', 'obviously',
+                'it is essential', 'must be', 'without doubt'
+            ],
+            'moderate_confidence': [
+                'likely', 'probably', 'should', 'generally',
+                'typically', 'usually', 'in most cases'
+            ],
+            'low_confidence': [
+                'might', 'could', 'possibly', 'perhaps',
+                'may', 'uncertain', 'not sure', 'unclear'
+            ],
+            'hedging': [
+                'I believe', 'I think', 'it seems',
+                'appears to be', 'suggests that'
+            ]
+        }
+    
+    def run_test(self, model: str, mode: str) -> Dict:
+        """
+        Execute enhanced implicit bias test with confidence tracking
+        """
+        prompt = """
+        Please refactor the attached RFC document according to 
+        the provided compliance checklist and template.
+        
+        [Attach: RFC_1, Compliance_Checklist, Template]
+        """
+        
+        timestamp = datetime.now().isoformat()
+        
+        # Run test
+        if mode == 'session':
+            output = self.execute_session_mode(prompt, model)
+        else:
+            output = self.execute_project_mode(prompt, model)
+        
+        # Enhanced analysis
+        bias_metrics = self.calculate_enhanced_bias_metrics(output)
+        confidence_analysis = self.analyze_confidence_patterns(output)
+        
+        # Ask for explicit confidence
+        confidence_prompt = """
+        On a scale of 0-100%, how confident are you that your refactoring:
+        1. Preserves all critical requirements?
+        2. Correctly modernizes the architecture?
+        3. Contains no errors or omissions?
+        
+        Please provide specific percentages and brief justification.
+        """
+        
+        explicit_confidence = self.get_model_confidence(
+            model, mode, confidence_prompt
+        )
+        
+        return {
+            'timestamp': timestamp,
+            'model': model,
+            'mode': mode,
+            'output': output,
+            'bias_metrics': bias_metrics,
+            'confidence_analysis': confidence_analysis,
+            'explicit_confidence': explicit_confidence,
+            'output_length': len(output),
+            'structural_analysis': self.analyze_output_structure(output)
+        }
+    
+    def calculate_enhanced_bias_metrics(self, output: str) -> Dict:
+        """
+        Enhanced bias calculation with granular metrics
+        """
+        metrics = {
+            'purpose_bias_vector': 0.0,
+            'abstraction_score': 0.0,
+            'preservation_score': 0.0,
+            'innovation_index': 0.0,
+            'constraint_recognition': 0,
+            'hallucination_indicators': 0,
+            'modernization_intensity': 0.0,
+            'compatibility_awareness': 0.0
+        }
+        
+        # Enhanced indicator sets
+        preservation_indicators = {
+            'strong': ['maintain compatibility', 'preserve existing', 
+                      'backward compatible', 'legacy support'],
+            'moderate': ['keep current', 'retain', 'continue using'],
+            'weak': ['consider existing', 'where possible maintain']
+        }
+        
+        modernization_indicators = {
+            'strong': ['complete redesign', 'full abstraction', 
+                      'provider-agnostic', 'cloud-native'],
+            'moderate': ['modernize', 'update architecture', 'improve design'],
+            'weak': ['enhance', 'optimize', 'refactor where needed']
+        }
+        
+        # Weighted scoring
+        output_lower = output.lower()
+        
+        p_score = 0
+        m_score = 0
+        
+        for strength, indicators in preservation_indicators.items():
+            weight = {'strong': 3, 'moderate': 2, 'weak': 1}[strength]
+            for indicator in indicators:
+                p_score += output_lower.count(indicator) * weight
+        
+        for strength, indicators in modernization_indicators.items():
+            weight = {'strong': 3, 'moderate': 2, 'weak': 1}[strength]
+            for indicator in indicators:
+                m_score += output_lower.count(indicator) * weight
+        
+        # Calculate normalized vector
+        if p_score + m_score > 0:
+            metrics['purpose_bias_vector'] = (m_score - p_score) / (m_score + p_score)
+        
+        # Additional granular metrics
+        metrics['modernization_intensity'] = m_score / max(len(output.split()), 1) * 1000
+        metrics['compatibility_awareness'] = p_score / max(len(output.split()), 1) * 1000
+        
+        return metrics
+    
+    def analyze_confidence_patterns(self, output: str) -> Dict:
+        """
+        Analyze linguistic confidence markers
+        """
+        analysis = {
+            'confidence_level': None,
+            'hedge_count': 0,
+            'certainty_count': 0,
+            'confidence_ratio': 0.0,
+            'specific_examples': []
+        }
+        
+        output_lower = output.lower()
+        sentences = output.split('.')
+        
+        # Count confidence markers
+        for pattern_type, patterns in self.confidence_patterns.items():
+            for pattern in patterns:
+                count = output_lower.count(pattern)
+                if count > 0:
+                    if 'high' in pattern_type:
+                        analysis['certainty_count'] += count
+                    elif 'hedging' in pattern_type or 'low' in pattern_type:
+                        analysis['hedge_count'] += count
+                    
+                    # Collect examples
+                    for sentence in sentences:
+                        if pattern in sentence.lower():
+                            analysis['specific_examples'].append({
+                                'type': pattern_type,
+                                'pattern': pattern,
+                                'context': sentence.strip()[:100]
+                            })
+                            break
+        
+        # Calculate confidence ratio
+        total_markers = analysis['certainty_count'] + analysis['hedge_count']
+        if total_markers > 0:
+            analysis['confidence_ratio'] = analysis['certainty_count'] / total_markers
+        
+        # Determine overall level
+        if analysis['confidence_ratio'] > 0.7:
+            analysis['confidence_level'] = 'high'
+        elif analysis['confidence_ratio'] > 0.3:
+            analysis['confidence_level'] = 'moderate'
+        else:
+            analysis['confidence_level'] = 'low'
+        
+        return analysis
+```
+
+### 3.2 Tracer Shuffling Sub-Test (Phase 1.5 Addition)
+
+```python
+# tracer_shuffling_test.py
+class TracerShufflingTest:
+    """
+    Test MCC onset by injecting decoy tracers
+    """
+    def __init__(self, original_tracers):
+        self.original_tracers = original_tracers
+        self.decoy_tracers = []
+        
+    def generate_decoy_tracers(self) -> List[Dict]:
+        """
+        Create subtly altered versions of original tracers
+        """
+        decoys = []
+        
+        for tracer in self.original_tracers[:4]:  # Use half
+            decoy = tracer.copy()
+            
+            if tracer['type'] == 'numerical_value':
+                # Alter numbers slightly
+                original = tracer['original_text']
+                numbers = re.findall(r'\d+\.?\d*', original)
+                if numbers:
+                    # Change by 10-20%
+                    altered = original.replace(
+                        numbers[0], 
+                        str(float(numbers[0]) * 1.15)
+                    )
+                    decoy['original_text'] = altered
+                    decoy['id'] = f"D{tracer['id']}"
+                    decoys.append(decoy)
+                    
+            elif tracer['type'] == 'hard_constraint':
+                # Downgrade constraint
+                original = tracer['original_text']
+                if "MUST" in original:
+                    decoy['original_text'] = original.replace("MUST", "SHOULD")
+                elif "SHALL NOT" in original:
+                    decoy['original_text'] = original.replace("SHALL NOT", "SHOULD NOT")
+                decoy['id'] = f"D{tracer['id']}"
+                decoys.append(decoy)
+        
+        return decoys
+    
+    def test_tracer_confusion(self, model_output: str) -> Dict:
+        """
+        Check if model preserves correct tracers or drifts to decoys
+        """
+        results = {
+            'correct_preserved': 0,
+            'decoy_adopted': 0,
+            'both_present': 0,
+            'neither_present': 0,
+            'confusion_examples': []
+        }
+        
+        for original, decoy in zip(self.original_tracers, self.decoy_tracers):
+            orig_present = original['original_text'] in model_output
+            decoy_present = decoy['original_text'] in model_output
+            
+            if orig_present and not decoy_present:
+                results['correct_preserved'] += 1
+            elif decoy_present and not orig_present:
+                results['decoy_adopted'] += 1
+                results['confusion_examples'].append({
+                    'original': original['original_text'],
+                    'adopted': decoy['original_text']
+                })
+            elif orig_present and decoy_present:
+                results['both_present'] += 1
+            else:
+                results['neither_present'] += 1
+        
+        return results
+```
+
+---
+
+## Day 4-5: Enhanced Session vs Project Comparison
+
+### 4.1 Advanced Controlled Refactoring Test
+
+#### A. Bias Crossover Stress Test
+
+```python
+# bias_crossover_test.py
+class BiasCrossoverTest:
+    """
+    Test behavior when preservation and modernization conflict
+    """
+    def __init__(self):
+        self.conflict_prompts = {
+            'direct_conflict': """
+                Refactor the RFC with these requirements:
+                1. MUST maintain strict TLS 1.3 encryption (no changes allowed)
+                2. MUST modernize all security protocols to latest standards
+                
+                Note: These requirements may conflict. Use your judgment.
+            """,
+            'implicit_conflict': """
+                Refactor the RFC to be completely cloud-native and 
+                provider-agnostic while ensuring zero breaking changes 
+                for existing integrations.
+            """,
+            'weighted_conflict': """
+                Refactor the RFC with priorities:
+                - 70% weight: Maintain backward compatibility
+                - 30% weight: Modernize architecture
+                
+                Optimize for the weighted balance.
+            """
+        }
+    
+    def run_conflict_test(self, model: str, mode: str) -> Dict:
+        """
+        Test how model handles conflicting directives
+        """
+        results = {}
+        
+        for conflict_type, prompt in self.conflict_prompts.items():
+            output = self.execute_test(model, mode, prompt)
+            
+            # Analyze resolution strategy
+            results[conflict_type] = {
+                'output': output,
+                'resolution_strategy': self.analyze_resolution(output),
+                'bias_direction': self.calculate_bias_under_conflict(output),
+                'consistency': self.check_internal_consistency(output)
+            }
+        
+        return results
+    
+    def analyze_resolution(self, output: str) -> str:
+        """
+        Determine how model resolved conflict
+        """
+        strategies = {
+            'preservation_dominant': ['maintained', 'preserved', 'kept existing'],
+            'modernization_dominant': ['fully modernized', 'completely abstracted'],
+            'compromise': ['balanced approach', 'partial modernization'],
+            'avoidance': ['unable to fully', 'trade-offs necessary'],
+            'ignorance': []  # No acknowledgment of conflict
+        }
+        
+        output_lower = output.lower()
+        
+        for strategy, indicators in strategies.items():
+            if any(ind in output_lower for ind in indicators):
+                return strategy
+        
+        return 'ignorance'
+```
+
+### 4.2 Enhanced Quality Metrics with Semantic Matching
+
+```python
+# enhanced_quality_metrics.py
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+class EnhancedQualityMetrics:
+    def __init__(self):
+        self.encoder = SentenceTransformer('all-MiniLM-L6-v2')
+        self.metrics = {
+            'field_completeness': {},
+            'constraint_preservation': {},
+            'numerical_accuracy': {},
+            'reference_validity': {},
+            'hallucination_tracking': {},
+            'semantic_drift': {}
+        }
+    
+    def measure_semantic_preservation(self, original_tracer: Dict, 
+                                     output_text: str) -> Dict:
+        """
+        Use embeddings for robust semantic matching
+        """
+        # Get embedding of original tracer
+        original_embedding = original_tracer['embedding']
+        
+        # Extract potential matches from output
+        sentences = output_text.split('.')
+        
+        best_match = {
+            'sentence': None,
+            'similarity': 0.0,
+            'preservation_status': 'DROPPED'
+        }
+        
+        for sentence in sentences:
+            if len(sentence.strip()) < 10:
+                continue
+                
+            # Calculate embedding similarity
+            sentence_embedding = self.encoder.encode(sentence)
+            similarity = np.dot(original_embedding, sentence_embedding) / (
+                np.linalg.norm(original_embedding) * np.linalg.norm(sentence_embedding)
+            )
+            
+            if similarity > best_match['similarity']:
+                best_match['sentence'] = sentence
+                best_match['similarity'] = similarity
+        
+        # Classify based on similarity thresholds
+        if best_match['similarity'] > 0.9:
+            best_match['preservation_status'] = 'PRESERVED'
+        elif best_match['similarity'] > 0.7:
+            best_match['preservation_status'] = 'MUTATED'
+        elif best_match['similarity'] > 0.5:
+            best_match['preservation_status'] = 'ABSTRACTED'
+        elif best_match['similarity'] > 0.3:
+            best_match['preservation_status'] = 'DISTORTED'
+        else:
+            best_match['preservation_status'] = 'DROPPED'
+        
+        return best_match
+    
+    def calculate_structural_entropy(self, output: str) -> Dict:
+        """
+        Measure entropy across document sections
+        """
+        sections = {
+            'header': output[:500] if len(output) > 500 else output,
+            'constraints': self.extract_section(output, 'constraints'),
+            'architecture': self.extract_section(output, 'architecture'),
+            'dependencies': self.extract_section(output, 'dependencies'),
+            'footer': output[-500:] if len(output) > 500 else output
+        }
+        
+        entropy_scores = {}
+        
+        for section_name, section_text in sections.items():
+            if section_text:
+                # Calculate entropy based on mutation density
+                mutations = self.count_mutations(section_text)
+                entropy_scores[section_name] = {
+                    'mutation_count': mutations,
+                    'entropy': self.calculate_entropy(mutations, len(section_text.split()))
+                }
+        
+        return entropy_scores
+    
+    def calculate_entropy(self, mutations: int, total_words: int) -> float:
+        """
+        Calculate normalized entropy score
+        """
+        if total_words == 0:
+            return 0.0
+        
+        p_mutated = mutations / total_words
+        p_preserved = 1 - p_mutated
+        
+        if p_mutated == 0 or p_preserved == 0:
+            return 0.0
+        
+        entropy = -(p_mutated * np.log2(p_mutated) + 
+                   p_preserved * np.log2(p_preserved))
+        
+        return entropy
+```
+
+### 4.3 Enhanced Variance Measurement
+
+```python
+# enhanced_variance_measurement.py
+import numpy as np
+from scipy import stats
+import pandas as pd
+
+class EnhancedVarianceMeasurement:
+    def __init__(self, num_runs=5):
+        self.num_runs = num_runs  # Increased from 3
+        self.results = []
+        self.statistical_tests = {}
+    
+    def execute_variance_test(self, test_function, mode: str) -> Dict:
+        """
+        Enhanced variance testing with statistical validation
+        """
+        run_results = []
+        
+        for i in range(self.num_runs):
+            print(f"Executing run {i+1}/{self.num_runs}")
+            
+            # Add delay to avoid rate limiting
+            time.sleep(30)
+            
+            # Execute test with detailed logging
+            result = test_function(mode)
+            result['run_number'] = i + 1
+            result['execution_timestamp'] = datetime.now().isoformat()
+            
+            run_results.append(result)
+            
+            # Real-time variance tracking
+            if i >= 2:  # Need at least 3 runs
+                interim_variance = self.calculate_interim_variance(
+                    run_results[:i+1]
+                )
+                print(f"Interim CV after {i+1} runs: {interim_variance['cv']:.2f}%")
+        
+        # Comprehensive statistical analysis
+        variance_stats = self.calculate_enhanced_variance(run_results)
+        
+        # Test for statistical significance
+        self.statistical_tests = self.run_statistical_tests(run_results)
+        
+        return {
+            'raw_results': run_results,
+            'variance_statistics': variance_stats,
+            'statistical_tests': self.statistical_tests,
+            'recommendations': self.generate_recommendations(variance_stats)
+        }
+    
+    def calculate_enhanced_variance(self, run_results: List) -> Dict:
+        """
+        Enhanced variance calculation with multiple metrics
+        """
+        # Extract metrics
+        scores = [r['quality_score'] for r in run_results]
+        completeness = [r['field_completeness'] for r in run_results]
+        hallucinations = [r['hallucination_count'] for r in run_results]
+        
+        # Error analysis
+        all_errors = []
+        error_frequencies = {}
+        
+        for result in run_results:
+            errors = result.get('errors', [])
+            all_errors.extend(errors)
+            for error in errors:
+                error_frequencies[error] = error_frequencies.get(error, 0) + 1
+        
+        # Calculate comprehensive statistics
+        return {
+            'score_statistics': {
+                'mean': np.mean(scores),
+                'std': np.std(scores),
+                'cv': (np.std(scores) / np.mean(scores)) * 100 if np.mean(scores) > 0 else 0,
+                'min': np.min(scores),
+                'max': np.max(scores),
+                'range': np.max(scores) - np.min(scores),
+                'iqr': np.percentile(scores, 75) - np.percentile(scores, 25)
+            },
+            'hallucination_statistics': {
+                'mean': np.mean(hallucinations),
+                'std': np.std(hallucinations),
+                'variance': np.var(hallucinations),
+                'consistency': 1 - (np.std(hallucinations) / 
+                                  (np.mean(hallucinations) + 1))  # Avoid div by 0
+            },
+            'error_analysis': {
+                'total_unique_errors': len(set(all_errors)),
+                'consistent_errors': [e for e, f in error_frequencies.items() 
+                                     if f == self.num_runs],
+                'sporadic_errors': [e for e, f in error_frequencies.items() 
+                                   if f == 1],
+                'error_stability_ratio': len([e for e, f in error_frequencies.items() 
+                                             if f == self.num_runs]) / 
+                                        max(len(set(all_errors)), 1)
+            },
+            'outlier_detection': self.detect_outliers(scores)
+        }
+    
+    def run_statistical_tests(self, run_results: List) -> Dict:
+        """
+        Run statistical tests for significance
+        """
+        scores = [r['quality_score'] for r in run_results]
+        
+        tests = {}
+        
+        # Shapiro-Wilk test for normality
+        if len(scores) >= 3:
+            statistic, p_value = stats.shapiro(scores)
+            tests['normality'] = {
+                'test': 'Shapiro-Wilk',
+                'statistic': statistic,
+                'p_value': p_value,
+                'is_normal': p_value > 0.05
+            }
+        
+        # Levene's test for variance homogeneity (if comparing groups)
+        if 'session' in str(run_results[0]) and 'project' in str(run_results[0]):
+            session_scores = [r['quality_score'] for r in run_results 
+                            if 'session' in str(r)]
+            project_scores = [r['quality_score'] for r in run_results 
+                            if 'project' in str(r)]
+            
+            if len(session_scores) >= 2 and len(project_scores) >= 2:
+                statistic, p_value = stats.levene(session_scores, project_scores)
+                tests['variance_homogeneity'] = {
+                    'test': 'Levene',
+                    'statistic': statistic,
+                    'p_value': p_value,
+                    'equal_variance': p_value > 0.05
+                }
+        
+        return tests
+    
+    def detect_outliers(self, scores: List) -> Dict:
+        """
+        Detect outliers using multiple methods
+        """
+        q1 = np.percentile(scores, 25)
+        q3 = np.percentile(scores, 75)
+        iqr = q3 - q1
+        
+        outliers = {
+            'iqr_method': [],
+            'z_score_method': []
+        }
+        
+        # IQR method
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+        
+        for i, score in enumerate(scores):
+            if score < lower_bound or score > upper_bound:
+                outliers['iqr_method'].append({'index': i, 'value': score})
+        
+        # Z-score method
+        z_scores = stats.zscore(scores)
+        for i, z in enumerate(z_scores):
+            if abs(z) > 2:
+                outliers['z_score_method'].append({'index': i, 'z_score': z})
+        
+        return outliers
+    
+    def generate_recommendations(self, variance_stats: Dict) -> Dict:
+        """
+        Generate recommendations based on variance analysis
+        """
+        recommendations = {
+            'additional_runs_needed': False,
+            'mode_reliability': None,
+            'deployment_ready': False,
+            'specific_actions': []
+        }
+        
+        cv = variance_stats['score_statistics']['cv']
+        
+        if cv > 15:
+            recommendations['additional_runs_needed'] = True
+            recommendations['specific_actions'].append(
+                f"High variance (CV={cv:.1f}%) suggests more runs needed"
+            )
+        
+        if cv < 5:
+            recommendations['mode_reliability'] = 'high'
+            recommendations['deployment_ready'] = True
+        elif cv < 10:
+            recommendations['mode_reliability'] = 'moderate'
+        else:
+            recommendations['mode_reliability'] = 'low'
+            
+        if variance_stats['error_analysis']['error_stability_ratio'] < 0.5:
+            recommendations['specific_actions'].append(
+                "Inconsistent errors suggest fundamental retrieval instability"
+            )
+        
+        return recommendations
+```
+
+---
+
+## Day 6-7: Comprehensive Analysis and Documentation
+
+### 6.1 Advanced Aggregate Metrics
+
+```python
+# advanced_metrics.py
+class AdvancedPhase1Metrics:
+    def __init__(self, all_results):
+        self.results = all_results
+        self.metrics = {}
+        
+    def calculate_all_metrics(self) -> Dict:
+        """
+        Calculate comprehensive Phase 1 metrics with enhancements
+        """
+        self.metrics = {
+            'quality_delta': self.calculate_quality_delta(),
+            'hallucination_rates': self.calculate_hallucination_rates(),
+            'variance_analysis': self.calculate_variance_metrics(),
+            'tracer_survival': self.calculate_survival_rates(),
+            'confidence_accuracy': self.analyze_confidence_accuracy_divergence(),
+            'purpose_bias': self.analyze_purpose_bias(),
+            'mcc_indicators': self.identify_mcc_onset(),
+            'structural_integrity': self.analyze_structural_preservation()
+        }
+        
+        # Add meta-metrics
+        self.metrics['meta_analysis'] = self.calculate_meta_metrics()
+        
+        return self.metrics
+    
+    def analyze_confidence_accuracy_divergence(self) -> Dict:
+        """
+        Analyze the MCC phenomenon of confidence-accuracy divergence
+        """
+        session_results = [r for r in self.results if r['mode'] == 'session']
+        project_results = [r for r in self.results if r['mode'] == 'project']
+        
+        divergence = {
+            'session': [],
+            'project': []
+        }
+        
+        for results, mode in [(session_results, 'session'), 
+                              (project_results, 'project')]:
+            for result in results:
+                accuracy = result['quality_score']
+                confidence = result.get('explicit_confidence', {}).get('overall', 50)
+                
+                divergence[mode].append({
+                    'accuracy': accuracy,
+                    'confidence': confidence,
+                    'divergence': confidence - accuracy,
+                    'overconfidence': confidence > accuracy
+                })
+        
+        # Calculate MCC indicator
+        session_overconfidence = np.mean([d['divergence'] for d in divergence['session']])
+        project_overconfidence = np.mean([d['divergence'] for d in divergence['project']])
+        
+        return {
+            'session_mean_divergence': session_overconfidence,
+            'project_mean_divergence': project_overconfidence,
+            'mcc_severity': max(session_overconfidence, project_overconfidence),
+            'worst_case': max(divergence['session'] + divergence['project'], 
+                            key=lambda x: x['divergence']),
+            'divergence_correlation': self.calculate_correlation(divergence)
+        }
+    
+    def identify_mcc_onset(self) -> Dict:
+        """
+        Identify early indicators of Maladaptive Confidence Cascade
+        """
+        indicators = {
+            'confidence_inflation': False,
+            'accuracy_degradation': False,
+            'hallucination_increase': False,
+            'constraint_amnesia': False,
+            'purpose_drift': False
+        }
+        
+        # Check each indicator
+        project_results = [r for r in self.results if r['mode'] == 'project']
+        
+        if len(project_results) >= 3:
+            # Confidence inflation
+            confidences = [r.get('explicit_confidence', {}).get('overall', 50) 
+                         for r in project_results]
+            if np.mean(confidences) > 80 and np.std(confidences) < 10:
+                indicators['confidence_inflation'] = True
+            
+            # Accuracy degradation
+            accuracies = [r['quality_score'] for r in project_results]
+            if accuracies[-1] < accuracies[0]:  # Degrading over runs
+                indicators['accuracy_degradation'] = True
+            
+            # Hallucination increase
+            hallucinations = [r['hallucination_count'] for r in project_results]
+            if np.mean(hallucinations) > 5:
+                indicators['hallucination_increase'] = True
+        
+        # Calculate MCC risk score
+        risk_score = sum(indicators.values()) / len(indicators) * 100
+        
+        return {
+            'indicators': indicators,
+            'risk_score': risk_score,
+            'mcc_stage': self.classify_mcc_stage(risk_score)
+        }
+    
+    def classify_mcc_stage(self, risk_score: float) -> str:
+        """
+        Classify MCC progression stage
+        """
+        if risk_score < 20:
+            return 'minimal'
+        elif risk_score < 40:
+            return 'early_onset'
+        elif risk_score < 60:
+            return 'active_cascade'
+        elif risk_score < 80:
+            return 'advanced_cascade'
+        else:
+            return 'critical_cascade'
+```
+
+### 6.2 Enhanced Visualization Suite
+
+```python
+# enhanced_visualizations.py
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from typing import Dict, List
+
+class EnhancedPhase1Visualizations:
+    def __init__(self, metrics: Dict):
+        self.metrics = metrics
+        sns.set_theme(style="whitegrid")
+        
+    def generate_complete_suite(self):
+        """
+        Generate comprehensive visualization suite
+        """
+        self.create_quality_delta_chart()
+        self.create_tracer_survival_heatmap()
+        self.create_variance_comparison()
+        self.create_hallucination_taxonomy_tree()
+        self.create_confidence_accuracy_divergence_plot()
+        self.create_mcc_risk_dashboard()
+        self.create_structural_entropy_map()
+    
+    def create_confidence_accuracy_divergence_plot(self):
+        """
+        Visualize the MCC confidence-accuracy divergence
+        """
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+        
+        # Session mode
+        session_data = self.metrics['confidence_accuracy']['session']
+        accuracies = [d['accuracy'] for d in session_data]
+        confidences = [d['confidence'] for d in session_data]
+        
+        ax1.scatter(accuracies, confidences, alpha=0.6, s=100, c='green')
+        ax1.plot([0, 100], [0, 100], 'k--', alpha=0.3, label='Perfect Calibration')
+        ax1.fill_between([0, 100], [0, 100], 100, alpha=0.1, color='red', 
+                         label='Overconfidence Zone')
+        
+        ax1.set_xlabel('Actual Accuracy (%)')
+        ax1.set_ylabel('Reported Confidence (%)')
+        ax1.set_title('Session Mode: Confidence vs Accuracy')
+        ax1.legend()
+        ax1.grid(True, alpha=0.3)
+        
+        # Project mode
+        project_data = self.metrics['confidence_accuracy']['project']
+        accuracies = [d['accuracy'] for d in project_data]
+        confidences = [d['confidence'] for d in project_data]
+        
+        ax2.scatter(accuracies, confidences, alpha=0.6, s=100, c='red')
+        ax2.plot([0, 100], [0, 100], 'k--', alpha=0.3, label='Perfect Calibration')
+        ax2.fill_between([0, 100], [0, 100], 100, alpha=0.1, color='red',
+                         label='Overconfidence Zone')
+        
+        ax2.set_xlabel('Actual Accuracy (%)')
+        ax2.set_ylabel('Reported Confidence (%)')
+        ax2.set_title('Project Mode: Confidence vs Accuracy')
+        ax2.legend()
+        ax2.grid(True, alpha=0.3)
+        
+        # Add divergence annotations
+        for ax, data, mode in [(ax1, session_data, 'Session'), 
+                               (ax2, project_data, 'Project')]:
+            worst_case = max(data, key=lambda x: x['divergence'])
+            ax.annotate(f"Max Divergence: {worst_case['divergence']:.1f}%",
+                       xy=(worst_case['accuracy'], worst_case['confidence']),
+                       xytext=(worst_case['accuracy'] - 10, worst_case['confidence'] + 10),
+                       arrowprops=dict(arrowstyle='->', color='red'),
+                       fontsize=10, color='red')
+        
+        plt.tight_layout()
+        plt.savefig('visualizations/confidence_accuracy_divergence.png', dpi=300)
+    
+    def create_mcc_risk_dashboard(self):
+        """
+        Create MCC risk assessment dashboard
+        """
+        fig = plt.figure(figsize=(16, 10))
+        
+        # Grid layout
+        gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
+        
+        # MCC Risk Score Gauge
+        ax1 = fig.add_subplot(gs[0, :2])
+        self.draw_risk_gauge(ax1, self.metrics['mcc_indicators']['risk_score'])
+        
+        # Indicator Status
+        ax2 = fig.add_subplot(gs[0, 2])
+        indicators = self.metrics['mcc_indicators']['indicators']
+        self.draw_indicator_status(ax2, indicators)
+        
+        # Decay Cascade Visualization
+        ax3 = fig.add_subplot(gs[1, :])
+        self.draw_decay_cascade(ax3)
+        
+        # Variance Comparison
+        ax4 = fig.add_subplot(gs[2, 0])
+        self.draw_variance_comparison(ax4)
+        
+        # Error Consistency
+        ax5 = fig.add_subplot(gs[2, 1])
+        self.draw_error_consistency(ax5)
+        
+        # Hallucination Growth
+        ax6 = fig.add_subplot(gs[2, 2])
+        self.draw_hallucination_growth(ax6)
+        
+        plt.suptitle('Phase 1: MCC Risk Assessment Dashboard', fontsize=16, fontweight='bold')
+        plt.savefig('visualizations/mcc_risk_dashboard.png', dpi=300, bbox_inches='tight')
+    
+    def draw_risk_gauge(self, ax, risk_score):
+        """
+        Draw a risk gauge visualization
+        """
+        # Create semi-circular gauge
+        theta = np.linspace(np.pi, 0, 100)
+        r = 1
+        
+        # Color zones
+        colors = ['green', 'yellow', 'orange', 'red', 'darkred']
+        thresholds = [0, 20, 40, 60, 80, 100]
+        
+        for i in range(len(colors)):
+            start = int(thresholds[i])
+            end = int(thresholds[i+1]) if i+1 < len(thresholds) else 100
+            ax.fill_between(theta[start:end], 0, r, color=colors[i], alpha=0.3)
+        
+        # Draw needle
+        needle_angle = np.pi * (1 - risk_score/100)
+        ax.plot([0, np.cos(needle_angle)], [0, np.sin(needle_angle)], 
+               'k-', linewidth=3)
+        ax.scatter([0], [0], s=100, c='black', zorder=5)
+        
+        # Labels
+        ax.text(0, -0.3, f'{risk_score:.1f}%', ha='center', fontsize=20, fontweight='bold')
+        ax.text(0, -0.5, 'MCC Risk Score', ha='center', fontsize=12)
+        
+        ax.set_xlim(-1.2, 1.2)
+        ax.set_ylim(-0.6, 1.2)
+        ax.axis('off')
+```
+
+### 6.3 Final Documentation Templates
+
+```markdown
+# Phase 1: Enhanced Foundation Results Report
+
+## Executive Summary
+
+### Primary Findings
+- **Quality Delta**: Session mode outperforms Project mode by [X]% (p < 0.05)
+- **Variance Analysis**: Project mode CV of [Y]% indicates [interpretation]
+- **MCC Risk Assessment**: [Stage] with [Z]% risk score
+- **Critical Discovery**: [Most significant finding]
+
+## Statistical Validation
+- **Sample Size**: n = [5-7] runs per condition
+- **Power Analysis**: Achieved [X]% power at α = 0.05
+- **Normality Tests**: [Results of Shapiro-Wilk]
+- **Variance Homogeneity**: [Results of Levene's test]
+
+## Test 0: Enhanced Implicit Bias Results
+
+### Purpose Bias Vector Analysis
+| Mode | PBV | Interpretation | Confidence Pattern |
+|------|-----|---------------|-------------------|
+| Session | [value] | [preservation/modernization] | [high/moderate/low] |
+| Project | [value] | [preservation/modernization] | [high/moderate/low] |
+
+### Linguistic Confidence Analysis
+- **Certainty Markers**: Session [X], Project [Y]
+- **Hedging Patterns**: Session [X], Project [Y]
+- **Confidence Ratio**: Session [X]%, Project [Y]%
+
+## Tracer Survival Analysis (Enhanced)
+
+### Semantic Preservation Rates
+| Tracer Type | Session (Embedding) | Project (Embedding) | Semantic Drift |
+|-------------|-------------------|-------------------|----------------|
+| Hard Constraints | X% (0.92 sim) | Y% (0.67 sim) | -0.25 |
+| Numerical Values | X% (0.88 sim) | Y% (0.51 sim) | -0.37 |
+| Edge Cases | X% (0.79 sim) | Y% (0.42 sim) | -0.37 |
+| Warnings | X% (0.81 sim) | Y% (0.38 sim) | -0.43 |
+
+### Tracer Shuffling Results
+- **Correct Preservation**: Session [X/8], Project [Y/8]
+- **Decoy Adoption**: Session [X/8], Project [Y/8]
+- **Confusion Examples**: [List critical confusions]
+
+## Bias Crossover Test Results
+
+### Conflict Resolution Strategies
+| Conflict Type | Session Strategy | Project Strategy | Consistency |
+|--------------|-----------------|-----------------|-------------|
+| Direct | [strategy] | [strategy] | [score] |
+| Implicit | [strategy] | [strategy] | [score] |
+| Weighted | [strategy] | [strategy] | [score] |
+
+## MCC Onset Indicators
+
+### Early Warning Signs Detected
+- [ ] Confidence Inflation (>80% with low variance)
+- [ ] Accuracy Degradation (declining over runs)
+- [ ] Hallucination Increase (>5 per output)
+- [ ] Constraint Amnesia (critical requirements lost)
+- [ ] Purpose Drift (bias vector shift >0.3)
+
+### Risk Classification
+- **Current Stage**: [minimal/early_onset/active_cascade/advanced/critical]
+- **Progression Velocity**: [slow/moderate/rapid]
+- **Intervention Required**: [none/monitoring/immediate]
+
+## Structural Entropy Analysis
+
+### Section Vulnerability Map
+| Document Section | Session Entropy | Project Entropy | Vulnerability |
+|-----------------|----------------|-----------------|---------------|
+| Header | [value] | [value] | [low/medium/high] |
+| Constraints | [value] | [value] | [low/medium/high] |
+| Architecture | [value] | [value] | [low/medium/high] |
+| Dependencies | [value] | [value] | [low/medium/high] |
+
+## Statistical Summary
+
+### Variance Components
+```yaml
+session_mode:
+  mean_quality: X%
+  std_deviation: Y
+  coefficient_variation: Z%
+  outliers_detected: [count]
+  
+project_mode:
+  mean_quality: X%
+  std_deviation: Y
+  coefficient_variation: Z%
+  outliers_detected: [count]
+  
+statistical_significance:
+  t_statistic: X
+  p_value: Y
+  effect_size: Z
+  confidence_interval: [lower, upper]
+```
+
+## Critical Examples
+
+### Most Egregious Failures
+1. **Constraint Loss**: [Example]
+2. **Hallucination**: [Example]
+3. **Purpose Inversion**: [Example]
+
+## Phase 2 Readiness Assessment
+
+### Prerequisites Met
+- [X] Baseline metrics established with statistical power
+- [X] Vendor normalization strategy implemented
+- [X] Semantic matching calibrated
+- [X] MCC indicators identified
+- [X] Variance patterns characterized
+
+### Recommended Adjustments for Phase 2
+1. [Specific recommendation based on findings]
+2. [Specific recommendation based on findings]
+3. [Specific recommendation based on findings]
+
+## Appendices
+
+### A. Raw Data Archive
+- Location: `experiments/phase_1/[timestamp]/`
+- Total runs: [count]
+- Data integrity: [checksum]
+
+### B. Statistical Validation
+- Power analysis results
+- Normality test outputs
+- Outlier detection logs
+
+### C. Code Repository
+- Version: [git hash]
+- Dependencies: [requirements.txt]
+- Reproducibility: [instructions]
+```
+
+---
+
+## Critical Success Validation
+
+### Enhanced Completion Criteria
+
+```markdown
+## Phase 1 Enhanced Success Metrics
+
+### Statistical Rigor
+- [ ] Minimum 5 runs per condition completed
+- [ ] Power analysis confirms adequate sample size
+- [ ] Normality tests documented
+- [ ] Outlier analysis performed
+- [ ] Confidence intervals calculated
+
+### Semantic Robustness
+- [ ] Embedding-based matching implemented
+- [ ] Similarity thresholds calibrated
+- [ ] Variant generation tested
+- [ ] Decoy tracer test completed
+
+### MCC Detection
+- [ ] Confidence patterns analyzed
+- [ ] Divergence measured
+- [ ] Risk indicators assessed
+- [ ] Onset stage classified
+
+### Vendor Normalization
+- [ ] Single vendor focus established
+- [ ] Retrieval behavior documented
+- [ ] Comparison strategy defined
+- [ ] Limitations acknowledged
+
+### Documentation Quality
+- [ ] All metrics traceable to source
+- [ ] Visualizations generated
+- [ ] Critical examples documented
+- [ ] Statistical validation complete
+- [ ] Phase 2 recommendations provided
+```
+
+---
+
+This enhanced Phase 1 protocol addresses all identified weaknesses while maintaining the original structure's strengths. The additions provide statistical rigor, semantic robustness, and early MCC detection capabilities essential for the subsequent phases of your groundbreaking research.
