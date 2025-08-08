@@ -7,8 +7,8 @@ framework: "JOBB Coherence Test Suite v1.0"
 version: 1.0
 status: "Preliminary Findings"
 tags: [JOBB, architectural-hallucination, RAG, information-decay, AI-safety]
-
 ---
+
 # Architectural Hallucination in AI Document Analysis: Preliminary Findings from Three Empirical Test Suites
 
 **First Published**: August 8, 2025  
