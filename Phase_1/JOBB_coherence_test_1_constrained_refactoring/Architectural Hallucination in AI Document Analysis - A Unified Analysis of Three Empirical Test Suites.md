@@ -1,4 +1,3 @@
-
 ---
 title: "Architectural Hallucination in AI Document Analysis"
 author: "James O'Brien-Brown"
