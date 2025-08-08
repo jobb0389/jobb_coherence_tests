@@ -37,13 +37,13 @@ This rigorous approach revealed patterns that ad-hoc testing might miss - partic
 
 ### Published
 - [Architectural Hallucination in AI Document Analysis](./Phase_1/JOBB_coherence_test_1_constrained_refactoring/Architectural%20Hallucination%20in%20AI%20Document%20Analysis%20-%20A%20Unified%20Analysis%20of%20Three%20Empirical%20Test%20Suites.md) - Preliminary findings from three test suites
-- [Initial Findings](./Phase_1/JOBB_coherence_test_1_constrained_refactoring/Initial_Findings.md) - Core metrics and observations
 
 ### Coming Soon
 - Complete test methodology and protocols
 - Raw data from all test runs
 - Statistical analysis notebooks
 - Additional test scenarios (medical, legal, financial)
+- Statistical analyses
 - Reproduction scripts
 
 ## Implications
